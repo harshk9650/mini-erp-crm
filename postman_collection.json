@@ -1,0 +1,293 @@
+{
+  "info": {
+    "name": "Mini ERP + CRM Operations Portal",
+    "description": "REST API collection for the Mini ERP + CRM backend. Set {{baseUrl}} and {{token}} variables. Get {{token}} from POST /auth/login.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "token", "value": "" },
+    { "key": "customerId", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "challanId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@erp.local\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Sales)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sales@erp.local\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Warehouse)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"warehouse@erp.local\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Accounts)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"accounts@erp.local\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get current user (/auth/me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "List customers (paginated + search)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/customers?page=1&pageSize=10&search=&status="
+          }
+        },
+        {
+          "name": "Get customer by id",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/customers/{{customerId}}"
+          }
+        },
+        {
+          "name": "Create customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/customers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sharma Hardware\",\n  \"mobile\": \"9998887770\",\n  \"email\": \"sharma@hardware.com\",\n  \"businessName\": \"Sharma Hardware Co\",\n  \"gstNumber\": \"27AAAAA0000A1Z5\",\n  \"customerType\": \"DISTRIBUTOR\",\n  \"address\": \"Sector 12, Ludhiana\",\n  \"status\": \"LEAD\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/customers/{{customerId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add follow-up note",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/customers/{{customerId}}/notes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Called customer, interested in bulk order next month.\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products & Inventory",
+      "item": [
+        {
+          "name": "List products (search + lowStock filter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/products?page=1&pageSize=10&search=&lowStock=false"
+          }
+        },
+        {
+          "name": "Get product by id",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/products/{{productId}}"
+          }
+        },
+        {
+          "name": "Create product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"PVC Pipe 1 inch\",\n  \"sku\": \"SKU-100\",\n  \"category\": \"Plumbing\",\n  \"unitPrice\": 45.0,\n  \"currentStock\": 200,\n  \"minStock\": 20,\n  \"location\": \"Warehouse B - Rack 1\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/products/{{productId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"unitPrice\": 49.5,\n  \"minStock\": 25\n}"
+            }
+          }
+        },
+        {
+          "name": "List stock movements for product",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/products/{{productId}}/movements?page=1&pageSize=20"
+          }
+        },
+        {
+          "name": "Record stock movement (IN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/products/{{productId}}/movements",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 50,\n  \"movementType\": \"IN\",\n  \"reason\": \"New stock received from supplier\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Record stock movement (OUT) - rejected if insufficient stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/products/{{productId}}/movements",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 999999,\n  \"movementType\": \"OUT\",\n  \"reason\": \"Damaged stock write-off\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales Challans",
+      "item": [
+        {
+          "name": "List challans (filter by status/customer)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/challans?page=1&pageSize=10&status=&customerId="
+          }
+        },
+        {
+          "name": "Get challan by id",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/challans/{{challanId}}"
+          }
+        },
+        {
+          "name": "Create challan (Draft)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/challans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"items\": [\n    { \"productId\": \"{{productId}}\", \"quantity\": 5 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Confirm challan (reduces stock)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/challans/{{challanId}}/confirm"
+          }
+        },
+        {
+          "name": "Cancel challan (restores stock if was confirmed)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/challans/{{challanId}}/cancel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": { "method": "GET", "url": "{{baseUrl}}/health" }
+        }
+      ]
+    }
+  ]
+}

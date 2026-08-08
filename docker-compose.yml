@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mini_erp_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: erp_user
+      POSTGRES_PASSWORD: erp_password
+      POSTGRES_DB: mini_erp
+    ports:
+      - "5432:5432"
+    volumes:
+      - erp_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp_user -d mini_erp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: mini_erp_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://erp_user:erp_password@postgres:5432/mini_erp?schema=public"
+      JWT_SECRET: "change-me-in-production"
+      PORT: 4000
+    ports:
+      - "4000:4000"
+    command: sh -c "npx prisma db push && npx prisma db seed || true && node dist/index.js"
+
+volumes:
+  erp_pg_data:
